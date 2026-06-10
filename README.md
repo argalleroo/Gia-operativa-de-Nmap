@@ -99,3 +99,30 @@ MISC (varios)
 -V: versión de Nmap.
 -h: mostrar la ayuda.
 ```
+# Comandos de instalacion en linux
+
+**Debian / Ubuntu / Kali / Linux Mint**
+```text
+sudo apt update
+sudo apt install nmap
+nmap --version
+```
+
+**Fedora / CentOS / RHEL (versiones nuevas con dnf)**
+```text
+sudo dnf check-update
+sudo dnf install nmap
+nmap --version
+```
+**Arch Linux y derivadas (Manjaro, EndeavourOS, etc.)**
+```text
+sudo pacman -Syu
+sudo pacman -S nmap
+nmap --version
+```
+**macOS (con Homebrew)**
+```text
+# Primero instala Homebrew si no lo tienes (desde https://brew.sh)
+brew install nmap
+nmap --version
+```
