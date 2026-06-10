@@ -259,6 +259,8 @@ Para sacar las IPs si es a un apguina web podemos o bien hacer un escaneo basico
 
 <img width="924" height="501" alt="image" src="https://github.com/user-attachments/assets/8449f38d-53c0-4c98-be04-55f689392175" />
 
+# Uso de Target mas usados
+
 Ya hemos hablado de los Target que mas vamos a usar pero vamos a ponerlas en uso, vamos a hacer un comando por cada una de ellas, uno que las englobe todas y por ultimo un comando muy extenso que nos dara unos archivos que se podran usar para auditorias de red.
 
 ```text
@@ -304,3 +306,187 @@ sudo nmap -sS -sV 217.160.0.0/24 \
  - Es util para trabajar con grandes rangos pero respetando una black list critica o prohibida
 
 <img width="919" height="742" alt="image" src="https://github.com/user-attachments/assets/b609f919-c5c1-48f3-ae3c-9809f1c69815" />
+
+
+**Comando extenso para una auditoria**
+
+El siguiente comando lo que ara sera un escaneo TCP sobre la ip 217.160.0.100 que pertenece al campus que copnvinamos deteccion de de servicios, versiones, sistema operativo y scripts de detección de vulnerabilidades, utilizando una configuración de alto rendimiento con los targets que explicare posteriormente:
+
+**Comando**
+
+```text
+sudo nmap \
+  -sS -sV -O -A \
+  -p- \
+  --open \
+  --min-rate 5000 \
+  --max-rate 20000 \
+  --min-parallelism 50 \
+  --max-retries 1 \
+  -T5 -vvv -n -Pn \
+  --reason \
+  --script='default,vuln,http-*' \
+  -oN auditoria_217.160.0.100_extenso.txt \
+  217.160.0.100
+```
+**Targets usados uno a uno**
+
+```-sS```
+Escaneo TCP SYN (rápido y típico en auditoría).
+
+```--sV```
+
+Detección de versiones de servicios en los puertos abiertos.
+
+```-O```
+Intenta identificar el sistema operativo del host.
+
+```-A```
+Activa modo “agresivo”: OS detection, version detection, scripts por defecto y traceroute.
+
+```-p-```
+Escanea todos los puertos TCP (1–65535).
+
+```--open```
+Solo muestra puertos abiertos (o posiblemente abiertos), lo que deja la salida más limpia para el informe.
+
+**Parte de rendimiento / timing / rate**
+```--min-rate 5000```
+Envía como mínimo 5000 paquetes por segundo; fuerza un escaneo rápido.
+
+```--max-rate 20000```
+Pone un techo de velocidad para no sobrepasar los 20 000 paquetes por segundo.
+
+```--min-parallelism 50```
+Mínimo 50 sondeos en paralelo; aumenta la concurrencia y acelera el escaneo.
+
+```--max-retries 1```
+Solo reintenta una vez los paquetes que fallan; reduce el tiempo total, a costa de poder perder algún puerto si la red es inestable.
+
+```-T5```
+Plantilla de temporizado más agresiva (“insane”), máxima velocidad posible.
+
+```-vvv```
+Verbosidad máxima: Nmap imprime todo lo que va haciendo, útil para entender y documentar cada fase.
+
+```-n```
+No resuelve DNS (no intenta convertir IP a nombres), ahorra tiempo.
+
+```-Pn```
+No hace host discovery; asume que la IP está activa (útil cuando ya sabes que responde o cuando los pings pueden estar filtrados).
+
+**Parte de scripts y razones**
+```--reason```
+Muestra el “motivo” por el que Nmap considera un puerto abierto/cerrado/filtrado (por ejemplo, tipo de respuesta recibida). Esto te da más contexto para tu informe técnico.
+
+**--script='default,vuln,http-***
+
+```default:``` scripts NSE básicos (información general, banners, etc.)
+
+```vuln:``` scripts de detección de vulnerabilidades conocidas.
+
+```http-*:``` scripts específicos de HTTP (cabeceras, métodos, info de servidor, etc.), muy útiles en una auditoría web.
+
+**Parte de salida**
+```-oN auditoria_217.160.0.100_extenso.txt```
+Guarda toda la salida en un archivo de texto legible que puedes adjuntar directamente como anexo técnico de la auditoría.
+
+```217.160.0.100```
+IP objetivo.
+
+El resultado del comando es:
+
+```text
+Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times may be slower.
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-06-10 13:47 +0200
+NSE: Loaded 321 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 13:47
+Completed NSE at 13:48, 10.01s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 13:48
+Completed NSE at 13:48, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 13:48
+Completed NSE at 13:48, 0.00s elapsed
+Pre-scan script results:
+|_http-robtex-shared-ns: *TEMPORARILY DISABLED* due to changes in Robtex's API. See https://www.robtex.com/api/
+Initiating SYN Stealth Scan at 13:48
+Scanning 217.160.0.100 [65535 ports]
+Discovered open port 80/tcp on 217.160.0.100
+Discovered open port 443/tcp on 217.160.0.100
+Completed SYN Stealth Scan at 13:48, 26.30s elapsed (65535 total ports)
+Initiating Service scan at 13:48
+Scanning 2 services on 217.160.0.100
+Completed Service scan at 13:48, 6.19s elapsed (2 services on 1 host)
+Initiating OS detection (try #1) against 217.160.0.100
+Retrying OS detection (try #2) against 217.160.0.100
+Initiating Traceroute at 13:48
+Completed Traceroute at 13:48, 2.02s elapsed
+NSE: Script scanning 217.160.0.100.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 13:48
+NSE Timing: About 21.07% done; ETC: 13:51 (0:01:56 remaining)
+NSE Timing: About 21.07% done; ETC: 13:53 (0:03:48 remaining)
+NSE Timing: About 21.07% done; ETC: 13:56 (0:05:41 remaining)
+NSE Timing: About 21.07% done; ETC: 13:58 (0:07:33 remaining)
+NSE Timing: About 21.07% done; ETC: 14:00 (0:09:26 remaining)
+NSE Timing: About 21.07% done; ETC: 14:03 (0:11:18 remaining)
+NSE Timing: About 22.24% done; ETC: 14:04 (0:12:18 remaining)
+NSE Timing: About 22.24% done; ETC: 14:06 (0:14:03 remaining)
+NSE Timing: About 22.24% done; ETC: 14:09 (0:15:48 remaining)
+NSE Timing: About 22.24% done; ETC: 14:11 (0:17:32 remaining)
+NSE Timing: About 22.24% done; ETC: 14:13 (0:19:17 remaining)
+NSE Timing: About 22.24% done; ETC: 14:15 (0:21:02 remaining)
+NSE Timing: About 22.24% done; ETC: 14:18 (0:22:47 remaining)
+NSE Timing: About 23.41% done; ETC: 14:18 (0:22:58 remaining)
+NSE Timing: About 23.41% done; ETC: 14:20 (0:24:36 remaining)
+NSE Timing: About 23.41% done; ETC: 14:23 (0:26:14 remaining)
+NSE Timing: About 23.41% done; ETC: 14:25 (0:27:52 remaining)
+NSE Timing: About 23.41% done; ETC: 14:27 (0:29:30 remaining)
+NSE Timing: About 23.41% done; ETC: 14:29 (0:31:09 remaining)
+NSE Timing: About 23.41% done; ETC: 14:31 (0:32:47 remaining)
+Completed NSE at 13:58, 601.04s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 13:58
+NSE Timing: About 88.37% done; ETC: 13:59 (0:00:04 remaining)
+NSE Timing: About 88.37% done; ETC: 13:59 (0:00:08 remaining)
+NSE Timing: About 88.37% done; ETC: 14:00 (0:00:12 remaining)
+NSE Timing: About 88.37% done; ETC: 14:01 (0:00:16 remaining)
+NSE Timing: About 88.37% done; ETC: 14:01 (0:00:20 remaining)
+NSE Timing: About 88.37% done; ETC: 14:02 (0:00:24 remaining)
+NSE Timing: About 88.37% done; ETC: 14:02 (0:00:28 remaining)
+NSE Timing: About 88.37% done; ETC: 14:03 (0:00:32 remaining)
+Completed NSE at 14:03, 262.62s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 14:03
+Completed NSE at 14:03, 0.00s elapsed
+Nmap scan report for 217.160.0.100
+Host is up, received user-set (0.048s latency).
+Skipping host 217.160.0.100 due to host timeout
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 14:03
+Completed NSE at 14:03, 0.00s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 14:03
+Completed NSE at 14:03, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 14:03
+Completed NSE at 14:03, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 912.60 seconds
+           Raw packets sent: 131186 (5.777MB) | Rcvd: 65 (4.866KB)
+```
+
+Y el archivo generado es:
+
+<img width="920" height="229" alt="image" src="https://github.com/user-attachments/assets/be30e8c6-2090-45a7-a8ce-df7068cc2b81" />
+
+En este caso como era de esperar en una paguina de un campus de ciberseguridad no se a encontrado nada.
+
+# Final
+
+Pues con este trabajo no hemos llegado a ver toda la herramienta pero si hemos aprendido a usar lo mas importante y basico y sobretodo para los mas nuevos es una manera de quitarse el miedo a trabajar con terminal ya que parece muy dificil pero con los años me e dado cuenta que no quiero usar otra cosa si es posible ya que es mas rapido aunque por supuesto hay que aprender a usarla, creo que nmap es una de las herramientas mas importantes puesto que es por donde empieza todo, por un simple escaneo tanto una auditoria como la primera vez que virtualizamos un Kali o u Parrot motivados por una pelicula o un video y nos ponemos un tutorial, normalmente es la primera o de las primeras herramientas que solemos tocar eso le da un magia especial y cuando se integra en nuestro dia a dia es algo que damos por echo siempre pero ¿Que auditor, hacker, pentester o curioso no lo usa en su dia a dia? hasta el punto de que cuesta imaginar un trabajo de reconocimiento sin ella.
