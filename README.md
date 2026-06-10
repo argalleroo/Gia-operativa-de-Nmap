@@ -99,7 +99,28 @@ MISC (varios)
 -V: versión de Nmap.
 -h: mostrar la ayuda.
 ```
-# Comandos de instalacion en linux
+# Target speceficacion importantes
+Estas son las que usarás el 90% del tiempo:
+
+```nmap <ip>```
+Escanea una IP concreta, por ejemplo nmap 192.168.1.10.
+
+```nmap <red/mascara>```
+Escanea toda una red en notación CIDR, por ejemplo nmap 192.168.1.0/24.
+
+```-iL <inputfilename>```
+Lee una lista de hosts o redes desde un archivo de texto (una IP o red por línea). Es ideal cuando el analista ya tiene un inventario de objetivos.
+
+```-iR <num hosts>```
+Selecciona objetivos aleatorios en Internet. Se usa más en pruebas de laboratorio o investigación, no en entornos corporativos.
+
+```--exclude <host1,host2,...>```
+Permite excluir algunos hosts o rangos del escaneo, por ejemplo equipos sensibles o que no deben tocarse.
+
+```--excludefile <exclude_file>```
+Igual que --exclude, pero leyendo la lista de exclusiones desde un archivo (útil en empresas donde hay una lista oficial de IP que no se escanean)
+
+# Guia de instalacion
 
 **Debian / Ubuntu / Kali / Linux Mint**
 ```text
@@ -126,3 +147,99 @@ nmap --version
 brew install nmap
 nmap --version
 ```
+**Para Windows**
+```text
+En Windows, Nmap se instala descargando el instalador oficial desde https://nmap.org/download.html,
+ejecutando el .exe como administrador y siguiendo el asistente. Una vez instalado, puede usarse desde la consola
+(cmd o PowerShell) ejecutando nmap igual que en Linux o macOS.
+```
+# Diferencias entre $USER o root al ejecutarlo
+
+**Usuario normal**
+
+ -Nmap no puede crear sockets crudos, así que algunas de las técnicas de escaneo no están disponibles.
+
+ -Suele usar métodos más “limitados”, por ejemplo llamadas connect() normales al sistema en lugar de SYN scan puro, y algunas detecciones de SO o scripts avanzados pueden no funcionar al no tener capacidad de permisos o dar menos información lo cual es critico para un analista de seguridad.
+
+ -Es más “seguro” para no romper nada, pero menos parecido a lo que haría un analista en un entorno profesional, si lo ejectas en tu host es lo mas seguro si estas empezando pero si lo ejecutas en VM no trendrias que tener miedo con sus respectivos respaldos.
+
+ **Usuario root**
+
+ -Nmap sí puede usar raw sockets y otras capacidades del kernel, así que se habilitan técnicas como -sS (SYN scan), muchos tipos de host discovery avanzados y scripts que tocan cosas más bajas de red lo cual nos abre un gran abanico de posibilidades.
+
+ -Los resultados suelen ser más completos y fiables: mejor detección de servicios, SO, respuesta a firewalls, etc lo cual nos da mucha mas informacion que puede ser crucual.
+
+ -Es el modo esperado en auditorías de seguridad reales, por eso en casi todos los ejemplos profesionales verás sudo nmap.
+
+# flujo de trabajo basico
+
+**1. Uso basico**
+
+ En este caso usaremos la paguina del campus de ciberseguridad
+
+No se puede usar ```https:// ni www``` ya que dara fallo
+
+<img width="913" height="76" alt="image" src="https://github.com/user-attachments/assets/43005160-67ed-4307-b059-5b18228b16ff" />
+
+Al usarse bien nos devuelve informacion basica como la ip ```(217.160.0.100)``` y los puertos abiertos
+
+```text
+PORT    STATE  SERVICE
+21/tcp  closed ftp
+22/tcp  closed ssh
+80/tcp  open   http
+443/tcp open   https
+```
+
+<img width="909" height="199" alt="image" src="https://github.com/user-attachments/assets/1d26433e-7734-4207-bb1a-dc323e4bdc19" />
+
+Apartir de ahora usaremos la ip como referencia en vez del enlace 
+
+**2. Definir objetivo**
+
+Podemos escanear la red en la que estamos conectados con:
+```text
+nmap -sn 192.168.1.0/24
+```
+<img width="920" height="213" alt="image" src="https://github.com/user-attachments/assets/4afc83f5-2951-42a1-ab06-340e99a367db" />
+
+Para encerrarlo en un archivo para su posteriro lectura automaticamente podemos ejecutar directamente:
+```text
+sudo nmap -sn 192.168.1.0/24 -oG scan.gnmap
+grep "Up" scan.gnmap | awk '{print $2}' > ips-activas.txt
+```
+<img width="922" height="591" alt="image" src="https://github.com/user-attachments/assets/43d00ac0-3244-4940-8b3e-4fcf7485696f" />
+
+
+Si desglosamos el comando seria asi:
+1. Primer comando: ```sudo nmap -sn 192.168.1.0/24 -oG scan.gnmap```
+
+ -**sudo**
+Ejecutas Nmap con privilegios elevados, lo que permite usar toda la potencia de nmap de sondeos (ICMP, ARP, etc.) y mejora la detección de hosts.
+
+ -**nmap -sn**
+ Con este comando especificamos que queremos solo los host encendidos ya que va preguntando "¿Quien esta vivo?" con ping scan.
+
+ -**-oG scan.gnmap**
+ Indicamos que lo queremos exportar a un formato grepeable en este caso scan.gnmap.
+
+2. Segundo comando: ```grep "Up" scan.gnmap | awk '{print $2}' > ips-activas.txt```
+
+Si usamos el archivo grepeable no se podia ejecitar ningun script de bash ya que nos sale demasiados datos que no nos importan
+
+<img width="922" height="221" alt="image" src="https://github.com/user-attachments/assets/3e6d1b0b-7c46-4537-97b2-c972731bb8c3" />
+
+Asi que lo debemos de filtrar con ```grep y awk```
+
+ -**grep "Up" scan.gnmap**
+Abre el archivo grepeable y se queda solo con las lineas que contienen "Up" por si se cuela alguno apagado
+
+ -**awk '{print $2}'**
+Aqui lo que hacemos es sacar el segundo campo que se dividen por espacion que en este caso es la ip ya que el contenido es ```Host: 192.168.1.1 (home.home)   Status: Up``` 
+
+ -**> ips-activas.txt**
+Rederigimos el archivo grepleable ya filtrado a un .txt en este caso con el nombre ips-activas.txt aunque se le puede llamar de cualquier manera y se nos quedaria de esta manera.
+
+<img width="923" height="186" alt="image" src="https://github.com/user-attachments/assets/5f8c83e0-1f87-4727-9bd1-3410bed126b2" />
+
+Este archivo ya si lo podemos escanear en cadena para no perder el tiempo ya que en redes coorporativas mas extensas abra muchas mas IPs activas.
