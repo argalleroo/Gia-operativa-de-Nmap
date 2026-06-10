@@ -1,10 +1,7 @@
-# “Nmap como herramienta central en un flujo de análisis de vulnerabilidades”:
+# Nmap como herramienta central en un flujo de análisis de vulnerabilidades:
 
-Descubrimiento de hosts.
-
-Escaneo de puertos y servicios.
-
-Detección de versiones y sistemas operativos.
-
-Uso de scripts NSE básicos.
+1. Descubrimiento de hosts.
+2. Escaneo de puertos y servicios.
+3. Detección de versiones y sistemas operativos.
+4. Uso de scripts NSE básicos.
 
