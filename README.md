@@ -195,7 +195,7 @@ PORT    STATE  SERVICE
 
 Apartir de ahora usaremos la ip como referencia en vez del enlace 
 
-**2. Definir objetivo**
+**2. Definir objetivos**
 
 Podemos escanear la red en la que estamos conectados con:
 ```text
@@ -243,3 +243,64 @@ Rederigimos el archivo grepleable ya filtrado a un .txt en este caso con el nomb
 <img width="923" height="186" alt="image" src="https://github.com/user-attachments/assets/5f8c83e0-1f87-4727-9bd1-3410bed126b2" />
 
 Este archivo ya si lo podemos escanear en cadena para no perder el tiempo ya que en redes coorporativas mas extensas abra muchas mas IPs activas.
+
+Para escanear todos las IPs filtradas en el archivo anterior ejecutamos el siguente comando:
+```text
+sudo nmap -sS -sV -iL ips-activas.txt
+```
+Lo cual nos devuelve un escaneo completo de cada uno de las IPs
+
+<img width="922" height="871" alt="image" src="https://github.com/user-attachments/assets/10b82c86-d2b9-4b9f-885e-256c800c0132" />
+
+
+**Escaneo especial a IPs**
+
+Para sacar las IPs si es a un apguina web podemos o bien hacer un escaneo basico de nmap o usar la herramienta ping con un ```ping campusciberseguridad.com```o algo mas silencioso como un ```ping -c 1 campusciberseguridad.com``` ya que el Target ```-c``` se usa para mandar unos paquetes en especifico y si mandamos uno es mucho mas silencioso que si mandamos varios.
+
+<img width="924" height="501" alt="image" src="https://github.com/user-attachments/assets/8449f38d-53c0-4c98-be04-55f689392175" />
+
+Ya hemos hablado de los Target que mas vamos a usar pero vamos a ponerlas en uso, vamos a hacer un comando por cada una de ellas, uno que las englobe todas y por ultimo un comando muy extenso que nos dara unos archivos que se podran usar para auditorias de red.
+
+```text
+sudo nmap 217.160.0.0/24
+```
+  -Escanea toda la red usando la notacion CIDR.
+
+  -En este ejemp`lo recorremos la subred detras de la ip del .1 al .254 te muetra que host nos responden y que puertos tiene abiertos
+
+-Es util si no sabes aun que ip te interesa en concreto y quieres descubrirs mas host.
+
+  <img width="917" height="819" alt="image" src="https://github.com/user-attachments/assets/1d73ca78-fde6-4aab-9dd8-24d640e59355" />
+
+
+```text
+sudo nmap -sS -sV -iL objetivos.txt
+```
+
+ -Le estamos diciendo que lea una lista de IPs que previemente escaneamos y grepeamos (en este caso en la ip del campus del rango .0 al .03) y que mape los puertos abiertos
+
+<img width="918" height="411" alt="image" src="https://github.com/user-attachments/assets/798d99b3-1cde-4dc9-affa-bf88ef63b58d" />
+
+```text
+sudo nmap -iR 5 -Pn
+```
+
+ -Con -iR 5 le decimos que escane 5 host aleatorios en internet.
+
+ -Lo acompañamos con -Pn para solo tratar con los host encendidos y no depender de ping.
+
+ -Se usa sobre todo mas en laboratorio no en entornos coorporativos pero es una opcion curiosa que queria recalcar como curiosidad mas que para uso real en una auditoria.
+
+<img width="912" height="414" alt="image" src="https://github.com/user-attachments/assets/793deebd-7d83-4793-9e3a-97f15cc5f406" />
+
+ ```text
+sudo nmap -sS -sV 217.160.0.0/24 \
+  --exclude 217.160.0.100
+```
+ -Escaneamos la subred pero respetando y sin tocar la ip atacada
+
+ - Usamos ```--exlude```para dejar afuera los host sensibles a los cuales podemos no tener permiso como es el caso de un escaneo por curiosidad.
+
+ - Es util para trabajar con grandes rangos pero respetando una black list critica o prohibida
+
+<img width="919" height="742" alt="image" src="https://github.com/user-attachments/assets/b609f919-c5c1-48f3-ae3c-9809f1c69815" />
