@@ -1,4 +1,4 @@
-“Nmap como herramienta central en un flujo de análisis de vulnerabilidades”:
+# “Nmap como herramienta central en un flujo de análisis de vulnerabilidades”:
 
 Descubrimiento de hosts.
 
