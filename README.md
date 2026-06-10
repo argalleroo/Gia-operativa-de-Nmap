@@ -1,9 +1,9 @@
-# Introduccion
+# Introducción
  -Nmap viene de Network Mapper
  
- -Es una herramienta de codigo abierto para escaneo de redes y puertos para hacer auditorias de segridad.
+ -Es una herramienta de código abierto para escaneo de redes y puertos para hacer auditorías de segridad.
  
- -Una de la mas usadas lo que le da una ventaa operativa de documentacion extra a la oficial.
+ -Una de la más usadas lo que le da una ventaja operativa de documentación extra a la oficial.
 
  # ¿Que podemos hacer con nmap?
  
@@ -161,19 +161,19 @@ ejecutando el .exe como administrador y siguiendo el asistente. Una vez instalad
 
  -Suele usar métodos más “limitados”, por ejemplo llamadas connect() normales al sistema en lugar de SYN scan puro, y algunas detecciones de SO o scripts avanzados pueden no funcionar al no tener capacidad de permisos o dar menos información lo cual es critico para un analista de seguridad.
 
- -Es más “seguro” para no romper nada, pero menos parecido a lo que haría un analista en un entorno profesional, si lo ejectas en tu host es lo mas seguro si estas empezando pero si lo ejecutas en VM no trendrias que tener miedo con sus respectivos respaldos.
+ -Es más “seguro” para no romper nada, pero menos parecido a lo que haría un analista en un entorno profesional, si lo ejecutas en tu host es lo más seguro si estás empezando pero si lo ejecutas en VM no trendrías que tener miedo con sus respectivos respaldos.
 
  **Usuario root**
 
  -Nmap sí puede usar raw sockets y otras capacidades del kernel, así que se habilitan técnicas como -sS (SYN scan), muchos tipos de host discovery avanzados y scripts que tocan cosas más bajas de red lo cual nos abre un gran abanico de posibilidades.
 
- -Los resultados suelen ser más completos y fiables: mejor detección de servicios, SO, respuesta a firewalls, etc lo cual nos da mucha mas informacion que puede ser crucual.
+ -Los resultados suelen ser más completos y fiables: mejor detección de servicios, SO, respuesta a firewalls, etc lo cual nos da mucha maá información que puede ser crucial.
 
  -Es el modo esperado en auditorías de seguridad reales, por eso en casi todos los ejemplos profesionales verás sudo nmap.
 
-# flujo de trabajo basico
+# flujo de trabajo básico
 
-**1. Uso basico**
+**1. Uso básico**
 
  En este caso usaremos la paguina del campus de ciberseguridad
 
@@ -181,7 +181,7 @@ No se puede usar ```https:// ni www``` ya que dara fallo
 
 <img width="913" height="76" alt="image" src="https://github.com/user-attachments/assets/43005160-67ed-4307-b059-5b18228b16ff" />
 
-Al usarse bien nos devuelve informacion basica como la ip ```(217.160.0.100)``` y los puertos abiertos
+Al usarse bien nos devuelve información básica como la ip ```(217.160.0.100)``` y los puertos abiertos
 
 ```text
 PORT    STATE  SERVICE
@@ -193,7 +193,7 @@ PORT    STATE  SERVICE
 
 <img width="909" height="199" alt="image" src="https://github.com/user-attachments/assets/1d26433e-7734-4207-bb1a-dc323e4bdc19" />
 
-Apartir de ahora usaremos la ip como referencia en vez del enlace 
+A partir de ahora usaremos la ip como referencia en vez del enlace 
 
 **2. Definir objetivos**
 
@@ -203,7 +203,7 @@ nmap -sn 192.168.1.0/24
 ```
 <img width="920" height="213" alt="image" src="https://github.com/user-attachments/assets/4afc83f5-2951-42a1-ab06-340e99a367db" />
 
-Para encerrarlo en un archivo para su posteriro lectura automaticamente podemos ejecutar directamente:
+Para encerrarlo en un archivo para su posterior lectura automáticamente podemos ejecutar directamente:
 ```text
 sudo nmap -sn 192.168.1.0/24 -oG scan.gnmap
 grep "Up" scan.gnmap | awk '{print $2}' > ips-activas.txt
@@ -211,7 +211,7 @@ grep "Up" scan.gnmap | awk '{print $2}' > ips-activas.txt
 <img width="922" height="591" alt="image" src="https://github.com/user-attachments/assets/43d00ac0-3244-4940-8b3e-4fcf7485696f" />
 
 
-Si desglosamos el comando seria asi:
+Si desglosamos el comando sería así:
 1. Primer comando: ```sudo nmap -sn 192.168.1.0/24 -oG scan.gnmap```
 
  -**sudo**
@@ -225,24 +225,24 @@ Ejecutas Nmap con privilegios elevados, lo que permite usar toda la potencia de 
 
 2. Segundo comando: ```grep "Up" scan.gnmap | awk '{print $2}' > ips-activas.txt```
 
-Si usamos el archivo grepeable no se podia ejecitar ningun script de bash ya que nos sale demasiados datos que no nos importan
+Si usamos el archivo grepeable no se podía ejecutar ningun script de bash ya que nos sale demasiados datos que no nos importan.
 
 <img width="922" height="221" alt="image" src="https://github.com/user-attachments/assets/3e6d1b0b-7c46-4537-97b2-c972731bb8c3" />
 
-Asi que lo debemos de filtrar con ```grep y awk```
+Así que lo debemos de filtrar con ```grep y awk```
 
  -**grep "Up" scan.gnmap**
 Abre el archivo grepeable y se queda solo con las lineas que contienen "Up" por si se cuela alguno apagado
 
  -**awk '{print $2}'**
-Aqui lo que hacemos es sacar el segundo campo que se dividen por espacion que en este caso es la ip ya que el contenido es ```Host: 192.168.1.1 (home.home)   Status: Up``` 
+Aquí lo que hacemos es sacar el segundo campo que se dividen por espacios que en este caso es la ip ya que el contenido es ```Host: 192.168.1.1 (home.home)   Status: Up``` 
 
  -**> ips-activas.txt**
-Rederigimos el archivo grepleable ya filtrado a un .txt en este caso con el nombre ips-activas.txt aunque se le puede llamar de cualquier manera y se nos quedaria de esta manera.
+Redirigimos el archivo grepeable ya filtrado a un .txt en este caso con el nombre ips-activas.txt aunque se le puede llamar de cualquier manera y se nos quedaría de esta manera.
 
 <img width="923" height="186" alt="image" src="https://github.com/user-attachments/assets/5f8c83e0-1f87-4727-9bd1-3410bed126b2" />
 
-Este archivo ya si lo podemos escanear en cadena para no perder el tiempo ya que en redes coorporativas mas extensas abra muchas mas IPs activas.
+Este archivo ya sí lo podemos escanear en cadena para no perder el tiempo ya que en redes coorporativas más extensas habrá muchas más IPs activas.
 
 Para escanear todos las IPs filtradas en el archivo anterior ejecutamos el siguente comando:
 ```text
@@ -255,22 +255,22 @@ Lo cual nos devuelve un escaneo completo de cada uno de las IPs
 
 **Escaneo especial a IPs**
 
-Para sacar las IPs si es a un apguina web podemos o bien hacer un escaneo basico de nmap o usar la herramienta ping con un ```ping campusciberseguridad.com```o algo mas silencioso como un ```ping -c 1 campusciberseguridad.com``` ya que el Target ```-c``` se usa para mandar unos paquetes en especifico y si mandamos uno es mucho mas silencioso que si mandamos varios.
+Para sacar las IPs, si es a una página web podemos o bien hacer un escaneo básico de nmap o usar la herramienta ping con un ```ping campusciberseguridad.com```o algo más silencioso como un ```ping -c 1 campusciberseguridad.com``` ya que el Target ```-c``` se usa para mandar unos paquetes en especifico y si mandamos uno es mucho más silencioso que si mandamos varios.
 
 <img width="924" height="501" alt="image" src="https://github.com/user-attachments/assets/8449f38d-53c0-4c98-be04-55f689392175" />
 
-# Uso de Target mas usados
+# Uso de Target más usados
 
-Ya hemos hablado de los Target que mas vamos a usar pero vamos a ponerlas en uso, vamos a hacer un comando por cada una de ellas, uno que las englobe todas y por ultimo un comando muy extenso que nos dara unos archivos que se podran usar para auditorias de red.
+Ya hemos hablado de los Target que más vamos a usar pero vamos a ponerlas en uso, vamos a hacer un comando por cada una de ellas, uno que las englobe todas y por último un comando muy extenso que nos dará un archivo que se podra usar para auditorías de red.
 
 ```text
 sudo nmap 217.160.0.0/24
 ```
-  -Escanea toda la red usando la notacion CIDR.
+  -Escanea toda la red usando la notación CIDR.
 
-  -En este ejemp`lo recorremos la subred detras de la ip del .1 al .254 te muetra que host nos responden y que puertos tiene abiertos
+  -En este ejemplo recorremos la subred detrás de la ip del .1 al .254 te muetra que host nos responden y que puertos tiene abiertos
 
--Es util si no sabes aun que ip te interesa en concreto y quieres descubrirs mas host.
+-Es útil si no sabes aún que ip te interesa en concreto y quieres descubrir más host.
 
   <img width="917" height="819" alt="image" src="https://github.com/user-attachments/assets/1d73ca78-fde6-4aab-9dd8-24d640e59355" />
 
@@ -279,7 +279,7 @@ sudo nmap 217.160.0.0/24
 sudo nmap -sS -sV -iL objetivos.txt
 ```
 
- -Le estamos diciendo que lea una lista de IPs que previemente escaneamos y grepeamos (en este caso en la ip del campus del rango .0 al .03) y que mape los puertos abiertos
+ -Le estamos diciendo que lea una lista de IPs que previemente escaneamos y grepeamos (en este caso en la ip del campus del rango .0 al .03) y que mapee los puertos abiertos
 
 <img width="918" height="411" alt="image" src="https://github.com/user-attachments/assets/798d99b3-1cde-4dc9-affa-bf88ef63b58d" />
 
@@ -291,7 +291,7 @@ sudo nmap -iR 5 -Pn
 
  -Lo acompañamos con -Pn para solo tratar con los host encendidos y no depender de ping.
 
- -Se usa sobre todo mas en laboratorio no en entornos coorporativos pero es una opcion curiosa que queria recalcar como curiosidad mas que para uso real en una auditoria.
+ -Se usa, sobre todo más en laboratorio no en entornos coorporativos pero es una opción curiosa que quería recalcar como curiosidad mas que para uso real en una auditoría.
 
 <img width="912" height="414" alt="image" src="https://github.com/user-attachments/assets/793deebd-7d83-4793-9e3a-97f15cc5f406" />
 
@@ -299,18 +299,18 @@ sudo nmap -iR 5 -Pn
 sudo nmap -sS -sV 217.160.0.0/24 \
   --exclude 217.160.0.100
 ```
- -Escaneamos la subred pero respetando y sin tocar la ip atacada
+ -Escaneamos la subred pero respetando y sin tocar la ip atacada.
 
- - Usamos ```--exlude```para dejar afuera los host sensibles a los cuales podemos no tener permiso como es el caso de un escaneo por curiosidad.
+ - Usamos ```--exlude```para dejar fuera los host sensibles a los cuales podemos no tener permiso como es el caso de un escaneo por curiosidad.
 
- - Es util para trabajar con grandes rangos pero respetando una black list critica o prohibida
+ - Es útil para trabajar con grandes rangos pero respetando una black list crítica o prohibida
 
 <img width="919" height="742" alt="image" src="https://github.com/user-attachments/assets/b609f919-c5c1-48f3-ae3c-9809f1c69815" />
 
 
-**Comando extenso para una auditoria**
+**Comando extenso para una auditoría**
 
-El siguiente comando lo que ara sera un escaneo TCP sobre la ip 217.160.0.100 que pertenece al campus que copnvinamos deteccion de de servicios, versiones, sistema operativo y scripts de detección de vulnerabilidades, utilizando una configuración de alto rendimiento con los targets que explicare posteriormente:
+El siguiente comando, lo que hará será un escaneo TCP sobre la ip 217.160.0.100 que pertenece al campus que convinamos detección de de servicios, versiones, sistema operativo y scripts de detección de vulnerabilidades, utilizando una configuración de alto rendimiento con los targets que explicaré posteriormente:
 
 **Comando**
 
@@ -342,7 +342,7 @@ Detección de versiones de servicios en los puertos abiertos.
 Intenta identificar el sistema operativo del host.
 
 ```-A```
-Activa modo “agresivo”: OS detection, version detection, scripts por defecto y traceroute.
+Activa modo “agresivo”: OS detección, versión detección, scripts por defecto y traceroute.
 
 ```-p-```
 Escanea todos los puertos TCP (1–65535).
@@ -485,8 +485,8 @@ Y el archivo generado es:
 
 <img width="920" height="229" alt="image" src="https://github.com/user-attachments/assets/be30e8c6-2090-45a7-a8ce-df7068cc2b81" />
 
-En este caso como era de esperar en una paguina de un campus de ciberseguridad no se a encontrado nada.
+En este caso, como era de esperar en una página de un campus de ciberseguridad no se ha encontrado nada.
 
 # Final
 
-Pues con este trabajo no hemos llegado a ver toda la herramienta pero si hemos aprendido a usar lo mas importante y basico y sobretodo para los mas nuevos es una manera de quitarse el miedo a trabajar con terminal ya que parece muy dificil pero con los años me e dado cuenta que no quiero usar otra cosa si es posible ya que es mas rapido aunque por supuesto hay que aprender a usarla, creo que nmap es una de las herramientas mas importantes puesto que es por donde empieza todo, por un simple escaneo tanto una auditoria como la primera vez que virtualizamos un Kali o u Parrot motivados por una pelicula o un video y nos ponemos un tutorial, normalmente es la primera o de las primeras herramientas que solemos tocar eso le da un magia especial y cuando se integra en nuestro dia a dia es algo que damos por echo siempre pero ¿Que auditor, hacker, pentester o curioso no lo usa en su dia a dia? hasta el punto de que cuesta imaginar un trabajo de reconocimiento sin ella.
+Pues con este trabajo, no hemos llegado a ver toda la herramienta pero sí hemos aprendido a usar lo mas importante y básico y sobretodo para los más nuevos es una manera de quitarse el miedo a trabajar con la terminal, ya que parece muy difícil pero con los años me he dado cuenta que no quiero usar otra cosa si es posible ya que es más rápido aunque por supuesto hay que aprender a usarla, creo que nmap es una de las herramientas más importantes puesto que es por donde empieza todo, por un simple escaneo tanto una auditoría como la primera vez que virtualizamos un Kali o un Parrot motivados por una película o un vídeo y nos ponemos un tutorial, normalmente es la primera o de las primeras herramientas que solemos tocar, eso le da un magia especial y cuando se integra en nuestro día a día es algo que damos por hecho siempre pero ¿Qué auditor, hacker, pentester o curioso no lo usa en su día a día? hasta el punto de que cuesta imaginar un trabajo de reconocimiento sin ella.
