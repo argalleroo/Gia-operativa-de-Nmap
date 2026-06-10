@@ -1,8 +1,9 @@
 # Introduccion
  -Nmap viene de Network Mapper
+ 
  -Es una herramienta de codigo abierto para escaneo de redes y puertos para hacer auditorias de segridad.
+ 
  -Una de la mas usadas lo que le da una ventaa operativa de documentacion extra a la oficial.
- -
 
  # ¿Que podemos hacer con nmap?
  
